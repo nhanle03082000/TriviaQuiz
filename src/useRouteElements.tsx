@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react'
 import { useRoutes } from 'react-router-dom'
+import path from './constants/path'
 
 // TODO: Add lazy loading for the routes
-const TriviaSetup = React.lazy(() => import('./pages/TriviaSetup'))
-const Quiz = React.lazy(() => import('./pages/Quiz'))
+const ListQuiz = React.lazy(() => import('./pages/ListQuiz'))
 const Results = React.lazy(() => import('./pages/Results'))
 
 export default function useRouteElements() {
@@ -12,20 +12,12 @@ export default function useRouteElements() {
       path: '/',
       element: (
         <Suspense>
-          <TriviaSetup />
+          <ListQuiz />
         </Suspense>
       )
     },
     {
-      path: '/quiz',
-      element: (
-        <Suspense>
-          <Quiz />
-        </Suspense>
-      )
-    },
-    {
-      path: '/results',
+      path: path.results,
       element: (
         <Suspense>
           <Results />
