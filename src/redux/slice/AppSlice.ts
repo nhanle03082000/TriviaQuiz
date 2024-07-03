@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 
-interface AppState {
+export interface AppState {
   loading: boolean
 }
 
