@@ -42,7 +42,7 @@ const ListQuiz = () => {
 
   const handleSubmitQuiz = () => {
     navigate(path.results, {
-      state: { listQuiz, selectedAnswers }
+      state: { answers: selectedAnswers, questions: listQuiz }
     })
   }
   return (
