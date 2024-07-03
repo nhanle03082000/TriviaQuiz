@@ -6,7 +6,7 @@ function Loading() {
   const loading = useSelector(appSelector.loading)
   if (!loading) return null
   return (
-    <div className='fixed inset-0 mx-auto'>
+    <div className='overlay'>
       <div className='dot-spinner'>
         <div className='dot-spinner__dot'></div>
         <div className='dot-spinner__dot'></div>
