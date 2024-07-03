@@ -1,2 +1,2 @@
-import Results from './Quiz'
+import Results from './Results'
 export default Results

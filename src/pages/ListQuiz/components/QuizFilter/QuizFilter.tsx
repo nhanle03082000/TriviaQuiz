@@ -1,22 +1,18 @@
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import categoryApi from '~/apis/triviaQuiz.api'
 import { difficultySelect } from '~/constants/difficultySelect'
 import HttpStatusCode from '~/constants/httpStatusCode.enum'
-import { appActions } from '~/redux/slice/AppSlice'
-import { handleSubmitQuiz } from '~/redux/slice/QuizSlice'
 import { ItemCategory } from '~/types/category.type'
 import { isAxiosError } from '~/utils/utils'
-import ListQuiz from '../ListQuiz'
+interface IPropsQuizFilter {
+  handleCreateQuiz: (category: string, difficulty: string) => Promise<void>
+}
 
-const TriviaSetup = () => {
-  const dispatch = useDispatch()
-
+function QuizFilter({ handleCreateQuiz }: IPropsQuizFilter) {
   const [categories, setCategories] = useState<ItemCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedDifficulty, setSelectedDifficulty] = useState('easy')
-
+  const [selectedDifficulty, setSelectedDifficulty] = useState('')
   useEffect(() => {
     getCategory()
   }, [])
@@ -24,8 +20,6 @@ const TriviaSetup = () => {
   const getCategory = async () => {
     //TODO: Get categories from the API
     try {
-      dispatch(appActions.startLoading())
-
       const response = await categoryApi.getCategories()
       if (response.status !== HttpStatusCode.Ok) {
         throw new Error('Failed to fetch categories')
@@ -38,8 +32,6 @@ const TriviaSetup = () => {
       } else {
         toast.error('An unexpected error occurred')
       }
-    } finally {
-      dispatch(appActions.stopLoading())
     }
   }
 
@@ -51,9 +43,8 @@ const TriviaSetup = () => {
     setSelectedDifficulty(e.target.value)
   }
 
-  const startQuiz = () => {
-    // TODO: Dispatch the selected category and difficulty to the store using the handleSubmitQuiz action
-    dispatch(handleSubmitQuiz({ category: selectedCategory, difficulty: selectedDifficulty }))
+  const createQuiz = () => {
+    handleCreateQuiz(selectedCategory, selectedDifficulty)
   }
   return (
     <div>
@@ -64,6 +55,7 @@ const TriviaSetup = () => {
         onChange={handleChangeCategory}
         aria-label='Select Category'
       >
+        <option value=''>{selectedCategory ? '' : 'Select a category'}</option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
@@ -76,7 +68,10 @@ const TriviaSetup = () => {
         onChange={handleChangeDifficulty}
         aria-label='Select Difficulty'
         className='border border-gray-300 rounded-md p-2 m-2 w-1/2'
+        defaultValue={''}
       >
+        <option value=''>{selectedDifficulty ? '' : 'Select a difficulty'}</option>
+
         {difficultySelect.map((difficulty) => (
           <option key={difficulty.id} value={difficulty.id}>
             {difficulty.name}
@@ -85,17 +80,13 @@ const TriviaSetup = () => {
       </select>
       <button
         id='createBtn'
-        onClick={startQuiz}
+        onClick={createQuiz}
         className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2 w-1/2'
       >
-        Start Quiz
+        Create Quiz
       </button>
-
-      <div>
-        <ListQuiz />
-      </div>
     </div>
   )
 }
 
-export default TriviaSetup
+export default QuizFilter
