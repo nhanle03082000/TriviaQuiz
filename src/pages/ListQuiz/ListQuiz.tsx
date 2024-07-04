@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -16,39 +16,52 @@ const ListQuiz = () => {
   const navigate = useNavigate()
   const [listQuiz, setListQuiz] = useState<Question[]>([])
   const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({})
-  const handleCreateQuiz = async (category: string, difficulty: string) => {
-    try {
-      dispatch(appActions.startLoading())
-      const response = await questionsApi.getCategories(category, difficulty)
-      if (response.status !== HttpStatusCode.Ok) {
-        throw new Error('Failed to fetch categories')
+  const handleCreateQuiz = useCallback(
+    async (category: string, difficulty: string) => {
+      // TODO: Fetch questions from the API based on the category and difficulty
+      try {
+        // Start loading
+        dispatch(appActions.startLoading())
+        const response = await questionsApi.getCategories(category, difficulty)
+        // Check if the response status is not OK
+        if (response.status !== HttpStatusCode.Ok) {
+          throw new Error('Failed to fetch categories')
+        }
+        // Set the listQuiz state
+        setListQuiz(response.data.results)
+      } catch (error) {
+        if (isAxiosError(error)) {
+          toast.error(error.message)
+        } else {
+          toast.error('An unexpected error occurred')
+        }
+      } finally {
+        dispatch(appActions.stopLoading())
       }
-      setListQuiz(response.data.results)
-    } catch (error) {
-      if (isAxiosError(error)) {
-        toast.error(error.message)
-      } else {
-        toast.error('An unexpected error occurred')
-      }
-    } finally {
-      dispatch(appActions.stopLoading())
-    }
-  }
-  const handleAnswerSelect = (questionId: string, answer: string) => () => {
-    setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }))
-  }
+    },
+    [dispatch]
+  )
+  const handleAnswerSelect = useCallback((questionId: string, answer: string) => {
+    // TODO: Update the selectedAnswers state
+    // If the answer is already selected, keep it, otherwise update it
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionId]: prev[questionId] === answer ? prev[questionId] : answer
+    }))
+  }, [])
 
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = useCallback(() => {
+    // TODO: Navigate to the Result page
     navigate(path.results, {
       state: { answers: selectedAnswers, questions: listQuiz }
     })
-  }
-  const allQuestionsAnswered = () => {
-    return (
-      listQuiz.length > 0 &&
-      listQuiz.every((quiz) => Object.prototype.hasOwnProperty.call(selectedAnswers, quiz.question))
-    )
-  }
+  }, [navigate, selectedAnswers, listQuiz])
+  const allQuestionsAnswered = useCallback(() => {
+    // TODO: Check if all questions have been answered
+    // If the listQuiz length is greater than 0 and every question has been answered
+    // eslint-disable-next-line no-prototype-builtins
+    return listQuiz.length > 0 && listQuiz.every((quiz) => selectedAnswers.hasOwnProperty(quiz.question))
+  }, [listQuiz, selectedAnswers])
   return (
     <div>
       <h1 className='text-3xl font-bold underline'>QUIZ MAKER</h1>
@@ -62,7 +75,7 @@ const ListQuiz = () => {
               <button
                 key={i}
                 className={`p-2 m-2 ${selectedAnswers[quiz.question] === answer ? 'bg-blue-200' : 'bg-gray-200'}`}
-                onClick={handleAnswerSelect(quiz.question, answer)}
+                onClick={() => handleAnswerSelect(quiz.question, answer)}
               >
                 {answer}
               </button>
