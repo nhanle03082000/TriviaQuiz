@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import categoryApi from '~/apis/triviaQuiz.api'
 import { difficultySelect } from '~/constants/difficultySelect'
@@ -35,22 +35,22 @@ function QuizFilter({ handleCreateQuiz }: IPropsQuizFilter) {
     }
   }
 
-  const handleChangeCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeCategory = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value)
-  }
+  }, [])
 
-  const handleChangeDifficulty = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeDifficulty = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDifficulty(e.target.value)
-  }
+  }, [])
 
-  const createQuiz = () => {
+  const createQuiz = useCallback(() => {
     handleCreateQuiz(selectedCategory, selectedDifficulty)
-  }
+  }, [handleCreateQuiz, selectedCategory, selectedDifficulty])
   return (
     <div>
       <select
         id='categorySelect'
-        className='border border-gray-300 rounded-md p-2 m-2 w-1/2'
+        className='w-1/2 p-2 m-2 border border-gray-300 rounded-md'
         value={selectedCategory}
         onChange={handleChangeCategory}
         aria-label='Select Category'
@@ -67,7 +67,7 @@ function QuizFilter({ handleCreateQuiz }: IPropsQuizFilter) {
         value={selectedDifficulty}
         onChange={handleChangeDifficulty}
         aria-label='Select Difficulty'
-        className='border border-gray-300 rounded-md p-2 m-2 w-1/2'
+        className='w-1/2 p-2 m-2 border border-gray-300 rounded-md'
         defaultValue={''}
       >
         <option value=''>{selectedDifficulty ? '' : 'Select a difficulty'}</option>
@@ -81,7 +81,7 @@ function QuizFilter({ handleCreateQuiz }: IPropsQuizFilter) {
       <button
         id='createBtn'
         onClick={createQuiz}
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2 w-1/2'
+        className='w-1/2 px-4 py-2 m-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700'
       >
         Create Quiz
       </button>
