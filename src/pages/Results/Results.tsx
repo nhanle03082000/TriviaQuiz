@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { QuizState } from '~/types/quizState.type'
 
@@ -6,19 +7,21 @@ const Results = () => {
   const navigate = useNavigate()
   const state = location.state as QuizState // Type assertion here
   const { answers, questions } = state
-  let correctCount = 0
 
-  questions.forEach((question) => {
-    if (answers[question.question] === question.correct_answer) {
-      correctCount++
-    }
-  })
+  const { correctCount, scoreColor } = useMemo(() => {
+    let correct = 0
+    questions.forEach((question) => {
+      if (answers[question.question] === question.correct_answer) {
+        correct++
+      }
+    })
+    const color = correct <= 1 ? 'text-red-500' : correct <= 3 ? 'text-yellow-500' : 'text-green-500'
+    return { correctCount: correct, scoreColor: color }
+  }, [questions, answers])
 
-  const scoreColor = correctCount <= 1 ? 'text-red-500' : correctCount <= 3 ? 'text-yellow-500' : 'text-green-500'
-
-  const handleCreateQuiz = () => {
+  const handleCreateQuiz = useCallback(() => {
     navigate('/')
-  }
+  }, [navigate])
 
   return (
     <div>
