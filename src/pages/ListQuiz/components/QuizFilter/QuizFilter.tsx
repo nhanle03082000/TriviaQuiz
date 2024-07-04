@@ -44,6 +44,10 @@ function QuizFilter({ handleCreateQuiz }: IPropsQuizFilter) {
   }, [])
 
   const createQuiz = useCallback(() => {
+    if (!selectedCategory || !selectedDifficulty) {
+      toast.warn('Please select both a category and a difficulty before creating a quiz.')
+      return
+    }
     handleCreateQuiz(selectedCategory, selectedDifficulty)
   }, [handleCreateQuiz, selectedCategory, selectedDifficulty])
   return (
