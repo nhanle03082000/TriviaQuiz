@@ -1,15 +1,19 @@
 import { useCallback, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { appActions } from '~/redux/slice/AppSlice'
 import { QuizState } from '~/types/quizState.type'
 
 const Results = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const state = location.state as QuizState // Type assertion here
   const { answers, questions } = state
 
   const { correctCount, scoreColor } = useMemo(() => {
     // TODO: Calculate the correct answers and the score color
+    dispatch(appActions.startLoading())
     let correct = 0
     // Loop through the questions and check if the answer is correct
     questions.forEach((question) => {
@@ -18,13 +22,15 @@ const Results = () => {
         correct++
       }
     })
+    dispatch(appActions.stopLoading())
+
     // Set the color based on the correct count
     const color = correct <= 1 ? 'text-red-500' : correct <= 3 ? 'text-yellow-500' : 'text-green-500'
     return { correctCount: correct, scoreColor: color }
   }, [questions, answers])
 
   const handleCreateQuiz = useCallback(() => {
-    navigate('/')
+    navigate(-1)
   }, [navigate])
 
   return (
