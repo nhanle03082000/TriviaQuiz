@@ -19,16 +19,7 @@ const Results = () => {
   const handleCreateQuiz = () => {
     navigate('/')
   }
-  if (!questions.length) {
-    return (
-      <div>
-        <h1 className='text-3xl font-bold'>No quiz data found</h1>
-        <button className='mt-4 p-2 bg-blue-500 text-white' onClick={handleCreateQuiz}>
-          Create A New Quiz
-        </button>
-      </div>
-    )
-  }
+
   return (
     <div>
       {questions.map((question, index) => (
@@ -43,7 +34,7 @@ const Results = () => {
       <p className={`text-xl ${scoreColor}`}>
         Your Score: {correctCount} / {questions.length}
       </p>
-      <button className='mt-4 p-2 bg-blue-500 text-white' onClick={handleCreateQuiz}>
+      <button className='p-2 mt-4 text-white bg-blue-500' onClick={handleCreateQuiz}>
         Create A New Quiz
       </button>
     </div>
