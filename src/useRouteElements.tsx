@@ -9,7 +9,7 @@ const Results = React.lazy(() => import('./pages/Results'))
 export default function useRouteElements() {
   const routeElement = useRoutes([
     {
-      path: '/',
+      path: path.triviaQuiz,
       element: (
         <Suspense>
           <ListQuiz />

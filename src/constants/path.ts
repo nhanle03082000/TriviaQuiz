@@ -1,5 +1,6 @@
 const path = {
-  results: '/results'
+  results: '/results',
+  triviaQuiz: 'TriviaQuiz'
 } as const
 
 export default path
