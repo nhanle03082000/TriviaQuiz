@@ -16,7 +16,6 @@ const ListQuiz = () => {
   const navigate = useNavigate()
   const [listQuiz, setListQuiz] = useState<Question[]>([])
   const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({})
-  const [submitted, setSubmitted] = useState(false)
   const handleCreateQuiz = async (category: string, difficulty: string) => {
     try {
       dispatch(appActions.startLoading())
@@ -36,7 +35,6 @@ const ListQuiz = () => {
     }
   }
   const handleAnswerSelect = (questionId: string, answer: string) => () => {
-    setSubmitted(true)
     setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }))
   }
 
@@ -45,6 +43,12 @@ const ListQuiz = () => {
       state: { answers: selectedAnswers, questions: listQuiz }
     })
   }
+  const allQuestionsAnswered = () => {
+    return (
+      listQuiz.length > 0 &&
+      listQuiz.every((quiz) => Object.prototype.hasOwnProperty.call(selectedAnswers, quiz.question))
+    )
+  }
   return (
     <div>
       <h1 className='text-3xl font-bold underline'>QUIZ MAKER</h1>
@@ -52,7 +56,7 @@ const ListQuiz = () => {
 
       <div className='space-y-4'>
         {listQuiz.map((quiz, index) => (
-          <div key={index} className='bg-white shadow-md rounded-lg p-4'>
+          <div key={index} className='p-4 bg-white rounded-lg shadow-md'>
             <h2 className='text-xl font-bold text-gray-800'>{quiz.question}</h2>
             {[...quiz.incorrect_answers, quiz.correct_answer].map((answer, i) => (
               <button
@@ -66,8 +70,8 @@ const ListQuiz = () => {
           </div>
         ))}
       </div>
-      {submitted && (
-        <button className='mt-4 p-2 bg-green-500 text-white' onClick={handleSubmitQuiz}>
+      {allQuestionsAnswered() && (
+        <button className='p-2 mt-4 text-white bg-green-500' onClick={handleSubmitQuiz}>
           Submit Quiz
         </button>
       )}
