@@ -9,12 +9,16 @@ const Results = () => {
   const { answers, questions } = state
 
   const { correctCount, scoreColor } = useMemo(() => {
+    // TODO: Calculate the correct answers and the score color
     let correct = 0
+    // Loop through the questions and check if the answer is correct
     questions.forEach((question) => {
       if (answers[question.question] === question.correct_answer) {
+        // If the answer is correct, increment the correct count
         correct++
       }
     })
+    // Set the color based on the correct count
     const color = correct <= 1 ? 'text-red-500' : correct <= 3 ? 'text-yellow-500' : 'text-green-500'
     return { correctCount: correct, scoreColor: color }
   }, [questions, answers])
