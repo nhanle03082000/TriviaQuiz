@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import path from '~/constants/path'
 import { appActions } from '~/redux/slice/AppSlice'
 import { QuizState } from '~/types/quizState.type'
 
@@ -30,7 +31,7 @@ const Results = () => {
   }, [questions, answers])
 
   const handleCreateQuiz = useCallback(() => {
-    navigate(-1)
+    navigate(path.triviaQuiz)
   }, [navigate])
 
   return (
