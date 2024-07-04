@@ -28,22 +28,30 @@ const Results = () => {
   }, [navigate])
 
   return (
-    <div>
+    <div className='max-w-2xl p-4 mx-auto my-8 rounded-lg shadow-lg'>
+      <h1 className='mb-6 text-3xl font-bold text-center'>Quiz Results</h1>
       {questions.map((question, index) => (
-        <div key={index} className='m-4'>
-          <h2 className='text-xl font-bold'>{question.question}</h2>
-          <p className={answers[question.question] === question.correct_answer ? 'text-green-500' : 'text-red-500'}>
+        <div key={index} className='p-4 mb-4 bg-gray-100 rounded-md'>
+          <h2 className='text-xl font-semibold'>{question.question}</h2>
+          <p
+            className={`my-2 ${answers[question.question] === question.correct_answer ? 'text-green-500' : 'text-red-500'}`}
+          >
             Your Answer: {answers[question.question]}
           </p>
           <p className='text-green-500'>Correct Answer: {question.correct_answer}</p>
         </div>
       ))}
-      <p className={`text-xl ${scoreColor}`}>
-        Your Score: {correctCount} / {questions.length}
-      </p>
-      <button className='p-2 mt-4 text-white bg-blue-500' onClick={handleCreateQuiz}>
-        Create A New Quiz
-      </button>
+      <div className='p-4 mt-6 text-center border-t'>
+        <p className={`text-2xl font-bold ${scoreColor}`}>
+          Your Score: {correctCount} / {questions.length}
+        </p>
+        <button
+          className='px-6 py-2 mt-4 text-white transition-colors bg-blue-500 rounded-md hover:bg-blue-600'
+          onClick={handleCreateQuiz}
+        >
+          Create A New Quiz
+        </button>
+      </div>
     </div>
   )
 }
